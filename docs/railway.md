@@ -7,7 +7,15 @@ This portfolio deployment has its own project, database, and GitHub source repos
 - **Postgres:** a dedicated PostgreSQL service with a persistent volume.
 - **basketball-lineup-analyzer:** the combined Angular dashboard and Django API.
 
-Connect the application to this repository's `main` branch. Use the repository root (`/`) as its root directory and `Dockerfile` as its Dockerfile path. Railway builds the image using the root Dockerfile; leave the build and start command overrides empty so the image's commands are used.
+Use the repository root (`/`) as the application's root directory and `Dockerfile` as its Dockerfile path. Railway builds the image using the root Dockerfile; leave the build and start command overrides empty so the image's commands are used.
+
+The initial deployment was uploaded with the Railway CLI. GitHub autodeploys require granting the Railway GitHub app access to this private repository, then connecting the service to `joshuahernn/basketball-lineup-analyzer` on `main`.
+
+To deploy the current local checkout again, run this from the repository root while signed into Railway:
+
+```powershell
+railway up --project 1e7166db-ee62-44e6-96e0-7ac89cee8642 --environment e8826859-6737-4a1e-a878-134bc26b4703 --service 292c10fc-e24f-479c-a57b-5822dbd128bf --detach
+```
 
 Set these application variables in Railway:
 
