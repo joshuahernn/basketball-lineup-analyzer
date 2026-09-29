@@ -1,0 +1,376 @@
+:host {
+  display: block;
+}
+
+/* Team Selector */
+
+.team-selector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin: 28px auto 24px;
+}
+
+.team-selector label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #444;
+}
+
+.team-selector select {
+  min-width: 220px;
+  height: 44px;
+  padding: 0 14px;
+  font-size: 15px;
+  background: white;
+  border: 1px solid #c7c7c7;
+  border-radius: 8px;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.team-selector select:hover {
+  border-color: #777;
+}
+
+.team-selector select:focus {
+  outline: none;
+  border-color: #3f51b5;
+  box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.15);
+}
+
+/* Game Selector */
+
+.game-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 16px 0 28px;
+}
+
+/* Main Dashboard */
+
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 40px;
+  align-items: start;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* Players Panel */
+
+.players-panel {
+  background: white;
+  border: 1px solid #e2e6ec;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.players-panel h3 {
+  margin: 0 0 16px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #222;
+}
+
+.player-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.player-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 14px;
+  background: #fafafa;
+  border: 1px solid #d9dee7;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #2d3748;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.player-card:hover {
+  background: white;
+  border-color: #b8c0cc;
+  transform: translateX(2px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.player-card.played {
+  background: #ecfdf3;
+  border-color: #22c55e;
+  color: #166534;
+  font-weight: 600;
+}
+
+.player-card.played::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  flex-shrink: 0;
+  margin-right: 9px;
+  background: #22c55e;
+  border-radius: 50%;
+}
+
+/* Analytics */
+
+.analytics-panel {
+  min-width: 0;
+}
+
+/* Team Comparison */
+
+.comparison-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.comparison-label {
+  font-weight: 500;
+}
+
+/* Ratings Chart */
+
+.chart-card {
+  width: 100%;
+  height: 420px;
+  padding: 16px;
+  background: white;
+  border: 1px solid #e2e6ec;
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+
+.chart-card ag-charts {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Stats Sections */
+
+.stats-section {
+  margin-top: 28px;
+}
+
+.stats-section h3 {
+  margin: 0 0 12px;
+  font-size: 17px;
+  font-weight: 600;
+  color: #222;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 18px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.stat-card:hover {
+  border-color: #c5cbd4;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+}
+
+.stat-label {
+  font-size: 13px;
+  color: #666;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: 600;
+  color: #222;
+}
+
+/* Individual Game Score */
+
+.game-summary-card {
+  padding: 20px;
+  margin-bottom: 20px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.game-matchup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+.game-team {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+.game-score {
+  font-size: 30px;
+  font-weight: 700;
+  color: #111;
+}
+
+/* Opponent Stats Button */
+
+.opponent-stats-button {
+  height: 40px;
+  padding: 0 16px;
+  background: white;
+  border: 1px solid #c7c7c7;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.opponent-stats-button:hover {
+  background: #f5f5f5;
+  border-color: #999;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+/* Responsive Layout */
+
+@media (max-width: 900px) {
+  .dashboard-layout {
+    grid-template-columns: 220px 1fr;
+    gap: 24px;
+    padding: 0 16px;
+  }
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 650px) {
+  .dashboard-layout {
+    grid-template-columns: 1fr;
+  }
+  .game-selector {
+    flex-wrap: wrap;
+  }
+  .comparison-controls {
+    flex-wrap: wrap;
+  }
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  .game-matchup {
+    gap: 12px;
+  }
+  .game-score {
+    font-size: 24px;
+  }
+}
+.player-impact-table {
+  overflow: hidden;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+}
+
+.player-impact-header,
+.player-impact-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 16px;
+  padding: 12px 16px;
+}
+
+.player-impact-header {
+  background: #f7f7f7;
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+}
+
+.player-impact-row {
+  border-top: 1px solid #eeeeee;
+  font-size: 14px;
+}
+
+.best-lineups-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.best-lineup-card {
+  padding: 18px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+}
+
+.best-lineup-header {
+  margin-bottom: 14px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.best-lineup-players {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  color: #555;
+}
+
+.best-lineup-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid #eeeeee;
+}
+
+.best-lineup-metrics div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.best-lineup-label {
+  font-size: 11px;
+  color: #777;
+}

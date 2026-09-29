@@ -1,0 +1,373 @@
+<div class="team-selector">
+  <label for="team-select"> Select Team </label>
+
+  <select id="team-select" [value]="selectedTeam" (change)="onTeamChange($event)">
+    <option value="">Choose a team</option>
+    @for (team of teamOptions; track team.value) {
+      <option [value]="team.value">
+        {{ team.label }}
+      </option>
+    }
+  </select>
+</div>
+
+@if (selectedTeam) {
+  <div class="game-selector">
+    <mat-button-toggle-group
+      [value]="selectedGame"
+      (change)="onGameToggleChange($event.value)"
+      aria-label="Select game"
+    >
+      <mat-button-toggle value=""> All Games </mat-button-toggle>
+      @for (gameId of gameIds; track gameId; let i = $index) {
+        <mat-button-toggle [value]="gameId"> Game {{ i + 1 }} </mat-button-toggle>
+      }
+    </mat-button-toggle-group>
+
+    @if (selectedGame !== '' && teamSummary) {
+      <button type="button" class="opponent-stats-button" (click)="viewOpponentStats()">
+        View {{ getTeamName(teamSummary.opponent_team_id) }} Stats →
+      </button>
+    }
+  </div>
+
+  <div class="dashboard-layout">
+    <div class="players-panel">
+      <h3>Players</h3>
+
+      <div class="player-list">
+        @for (player of selectedTeamPlayers; track player.player_id) {
+          <div class="player-card" [class.played]="activeGamePlayerIds.has(player.player_id)">
+            {{ player.name }}
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="analytics-panel">
+      @if (selectedGame === '') {
+        @if (teamSummary; as summary) {
+          <div class="comparison-controls">
+            <span class="comparison-label"> Compare with </span>
+
+            <mat-button-toggle-group
+              multiple
+              [value]="comparisonTeamIds"
+              (change)="onComparisonTeamsChange($event.value)"
+              aria-label="Compare teams"
+            >
+              @for (team of teamOptions; track team.value) {
+                @if (team.value !== selectedTeam) {
+                  <mat-button-toggle [value]="team.value">
+                    {{ team.label }}
+                  </mat-button-toggle>
+                }
+              }
+            </mat-button-toggle-group>
+          </div>
+
+          <div class="chart-card">
+            <ag-charts [options]="ratingsChartOptions"> </ag-charts>
+          </div>
+
+          <div class="stats-section">
+            <h3>Player Impact</h3>
+
+            <div class="player-impact-table">
+              <div class="player-impact-header">
+                <span>Player</span>
+                <span>ORtg</span>
+                <span>DRtg</span>
+                <span>Net Rating</span>
+              </div>
+
+              @for (player of playerImpact.slice(0, 5); track player.player_id) {
+                <div class="player-impact-row">
+                  <span>
+                    {{ player.name }}
+                  </span>
+                  <span>
+                    {{ player.offensive_rating.toFixed(1) }}
+                  </span>
+                  <span>
+                    {{ player.defensive_rating.toFixed(1) }}
+                  </span>
+                  <span>
+                    {{ player.net_rating > 0 ? '+' : '' }}
+                    {{ player.net_rating.toFixed(1) }}
+                  </span>
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="stats-section">
+            <h3>5-Man Lineup Recommendations — {{ getTeamName(selectedTeam) }}</h3>
+
+            <div class="best-lineups-grid">
+              @for (recommendation of lineupRecommendations; track recommendation.title) {
+                <div class="best-lineup-card">
+                  <div class="best-lineup-header">
+                    {{ recommendation.title }}
+                  </div>
+
+                  <div class="best-lineup-players">
+                    @for (player of recommendation.lineup.players; track player.player_id) {
+                      <span>
+                        {{ player.name }}
+                      </span>
+                    }
+                  </div>
+
+                  <div class="best-lineup-reason">
+                    {{ recommendation.reason }}
+                  </div>
+
+                  <div class="best-lineup-metrics">
+                    <div>
+                      <span class="best-lineup-label"> ORtg </span>
+                      <span>
+                        {{ recommendation.lineup.offensive_rating.toFixed(1) }}
+                      </span>
+                    </div>
+
+                    <div>
+                      <span class="best-lineup-label"> DRtg </span>
+                      <span>
+                        {{ recommendation.lineup.defensive_rating.toFixed(1) }}
+                      </span>
+                    </div>
+
+                    <div>
+                      <span class="best-lineup-label"> Net </span>
+                      <span>
+                        {{ recommendation.lineup.net_rating > 0 ? '+' : '' }}
+                        {{ recommendation.lineup.net_rating.toFixed(1) }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="stats-section">
+            <h3>Shooting</h3>
+
+            <div class="stats-grid">
+              <div class="stat-card">
+                <span class="stat-label"> FG% </span>
+                <span class="stat-value"> {{ summary.offensive_fg_pct.toFixed(1) }}% </span>
+              </div>
+
+              <div class="stat-card">
+                <span class="stat-label"> 2P% </span>
+                <span class="stat-value"> {{ summary.offensive_fg2_pct.toFixed(1) }}% </span>
+              </div>
+
+              <div class="stat-card">
+                <span class="stat-label"> 3P% </span>
+                <span class="stat-value"> {{ summary.offensive_fg3_pct.toFixed(1) }}% </span>
+              </div>
+
+              <div class="stat-card">
+                <span class="stat-label"> TS% </span>
+                <span class="stat-value"> {{ summary.offensive_ts_pct.toFixed(1) }}% </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stats-section">
+            <h3>Possession</h3>
+
+            <div class="stats-grid">
+              <div class="stat-card">
+                <span class="stat-label"> Turnover Rate </span>
+                <span class="stat-value"> {{ summary.turnover_rate.toFixed(1) }}% </span>
+              </div>
+
+              <div class="stat-card">
+                <span class="stat-label"> Offensive Rebound % </span>
+                <span class="stat-value">
+                  {{ summary.offensive_rebound_percentage.toFixed(1) }}%
+                </span>
+              </div>
+
+              <div class="stat-card">
+                <span class="stat-label"> Defensive Rebound % </span>
+                <span class="stat-value">
+                  {{ summary.defensive_rebound_percentage.toFixed(1) }}%
+                </span>
+              </div>
+
+              <div class="stat-card">
+                <span class="stat-label"> Free Throw Rate </span>
+                <span class="stat-value"> {{ summary.free_throw_rate.toFixed(1) }}% </span>
+              </div>
+            </div>
+          </div>
+        }
+      }
+
+      @if (selectedGame !== '') {
+        @if (teamSummary; as summary) {
+          <div class="game-summary-card">
+            <div class="game-matchup">
+              <span class="game-team">
+                {{ getTeamName(selectedTeam) }}
+              </span>
+              <span class="game-score">
+                {{ summary.team_score }}
+                -
+                {{ summary.opponent_score }}
+              </span>
+              <span class="game-team">
+                {{ getTeamName(summary.opponent_team_id) }}
+              </span>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <ag-charts [options]="ratingsChartOptions"> </ag-charts>
+          </div>
+
+          <div class="stats-section">
+            <h3>Shooting</h3>
+
+            <div class="stats-grid">
+              <div class="stat-card">
+                <span class="stat-label"> FG% </span>
+                <span class="stat-value"> {{ summary.offensive_fg_pct.toFixed(1) }}% </span>
+              </div>
+
+              <div class="stat-card">
+                <span class="stat-label"> 2P% </span>
+                <span class="stat-value"> {{ summary.offensive_fg2_pct.toFixed(1) }}% </span>
+              </div>
+
+              <div class="stat-card">
+                <span class="stat-label"> 3P% </span>
+                <span class="stat-value"> {{ summary.offensive_fg3_pct.toFixed(1) }}% </span>
+              </div>
+
+              <div class="stat-card">
+                <span class="stat-label"> TS% </span>
+                <span class="stat-value"> {{ summary.offensive_ts_pct.toFixed(1) }}% </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stats-section">
+            <h3>Possession</h3>
+
+            <div class="stats-grid">
+              <div class="stat-card">
+                <span class="stat-label"> Turnover Rate </span>
+                <span class="stat-value"> {{ summary.turnover_rate.toFixed(1) }}% </span>
+              </div>
+
+              <div class="stat-card">
+                <span class="stat-label"> Offensive Rebound % </span>
+                <span class="stat-value">
+                  {{ summary.offensive_rebound_percentage.toFixed(1) }}%
+                </span>
+              </div>
+
+              <div class="stat-card">
+                <span class="stat-label"> Defensive Rebound % </span>
+                <span class="stat-value">
+                  {{ summary.defensive_rebound_percentage.toFixed(1) }}%
+                </span>
+              </div>
+
+              <div class="stat-card">
+                <span class="stat-label"> Free Throw Rate </span>
+                <span class="stat-value"> {{ summary.free_throw_rate.toFixed(1) }}% </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stats-section">
+            <h3>Play Style</h3>
+
+            <div class="stats-grid">
+              <div class="stat-card">
+                <span class="stat-label"> 3PA Rate </span>
+                <span class="stat-value"> {{ summary.three_point_attempt_rate.toFixed(1) }}% </span>
+              </div>
+
+              <div class="stat-card">
+                <span class="stat-label"> 2PA Rate </span>
+                <span class="stat-value"> {{ summary.two_point_attempt_rate.toFixed(1) }}% </span>
+              </div>
+
+              <div class="stat-card">
+                <span class="stat-label"> Assist % </span>
+                <span class="stat-value"> {{ summary.assist_percentage.toFixed(1) }}% </span>
+              </div>
+
+              <div class="stat-card">
+                <span class="stat-label"> Assist / Turnover </span>
+                <span class="stat-value">
+                  {{ summary.assist_to_turnover_ratio.toFixed(2) }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stats-section">
+            <h3>Tempo</h3>
+
+            <div class="stats-grid">
+              <div class="stat-card">
+                <span class="stat-label"> Pace </span>
+                <span class="stat-value">
+                  {{ summary.pace.toFixed(1) }}
+                </span>
+              </div>
+
+              <div class="stat-card">
+                <span class="stat-label"> Average Possession Length </span>
+                <span class="stat-value">
+                  {{ summary.average_possession_length.toFixed(1) }}s
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stats-section">
+            <h3>Fourth Quarter</h3>
+
+            <div class="stats-grid">
+              <div class="stat-card">
+                <span class="stat-label"> Q4 Offensive Rating </span>
+                <span class="stat-value">
+                  {{ summary.q4_offensive_rating.toFixed(1) }}
+                </span>
+              </div>
+
+              <div class="stat-card">
+                <span class="stat-label"> Q4 Defensive Rating </span>
+                <span class="stat-value">
+                  {{ summary.q4_defensive_rating.toFixed(1) }}
+                </span>
+              </div>
+
+              <div class="stat-card">
+                <span class="stat-label"> Q4 Net Rating </span>
+                <span class="stat-value">
+                  {{ summary.q4_net_rating.toFixed(1) }}
+                </span>
+              </div>
+
+              <div class="stat-card">
+                <span class="stat-label"> Q4 TS% </span>
+                <span class="stat-value"> {{ summary.q4_ts_pct.toFixed(1) }}% </span>
+              </div>
+            </div>
+          </div>
+        }
+      }
+    </div>
+  </div>
+}
