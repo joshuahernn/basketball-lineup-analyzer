@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import re_path
-from app.views import lineups
+from app.views import frontend, lineups
 
 urlpatterns = [
     re_path(
@@ -36,8 +36,14 @@ urlpatterns = [
     ),
 
     re_path(
-    r'^api/v1/player-impact$',
-    lineups.PlayerImpact.as_view(),
-    name='player_impact',
-),
+        r'^api/v1/player-impact$',
+        lineups.PlayerImpact.as_view(),
+        name='player_impact',
+    ),
+
+    re_path(
+        r'^(?:lineups-summary(?:-api)?)?/?$',
+        frontend.dashboard,
+        name='dashboard',
+    ),
 ]

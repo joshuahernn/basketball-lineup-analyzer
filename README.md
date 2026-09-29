@@ -21,7 +21,7 @@ The Angular dashboard requests data from Django REST endpoints. The backend quer
 | Dashboard and charts | Angular, TypeScript, Angular Material, AG Charts |
 | API and analytics | Python, Django, Django REST Framework |
 | Storage | PostgreSQL |
-| Deployment configuration | Railway, Gunicorn, Express |
+| Deployment | Railway, Docker, Gunicorn, WhiteNoise |
 
 ## Demo dataset
 
@@ -98,12 +98,12 @@ python manage.py test app.tests
 npm run build
 ```
 
-The 12 unit tests cover derived metrics, including zero-denominator handling. They do not constitute full end-to-end coverage of every aggregation and UI interaction.
+The 15 unit tests cover derived metrics, including zero-denominator handling, and dashboard routing. They do not constitute full end-to-end coverage of every aggregation and UI interaction.
 
 ## Deploy your own instance
 
-Create a new PostgreSQL service and separate backend/frontend services. Use `/backend` and `/frontend` as their respective root directories. The checked-in `railway.json` files define build and start commands; connect the backend to the new database using `DATABASE_URL` and initialize the `app` schema before migrations.
+The root `Dockerfile` builds Angular and serves its compiled files alongside the Django API. This uses two Railway services: one application and one dedicated PostgreSQL database. Both the UI and API share an origin, so `BACKEND_PUBLIC_DOMAIN` stays empty in the production frontend configuration.
 
-Set `BACKEND_PUBLIC_DOMAIN` in `frontend/src/environments/environment.prod.ts` to your new backend's HTTPS origin, without a trailing slash, before building. Its empty default supports a same-origin reverse proxy forwarding `/api/v1` to Django. No existing deployment is linked or configured in this repository.
+On startup, the app creates the `app` schema, applies migrations, and imports the demo fixtures only if all four basketball tables are empty. Existing data is retained on redeployment. Set `DATABASE_URL`, a private `DJANGO_SECRET_KEY`, `DJANGO_DEBUG=false`, and `DJANGO_ALLOWED_HOSTS` in Railway.
 
-Import the demo data into that new database, set appropriate production host/CORS restrictions, and keep credentials out of Git.
+See [Railway deployment settings](docs/railway.md) for the service configuration. Credentials belong in service variables, never in Git.

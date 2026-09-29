@@ -21,9 +21,11 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'development-only-basketball-li
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', 'true').lower() == 'true'
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.environ.get(
+    'DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1,[::1],healthcheck.railway.app',
+).split(',')
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = False
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -55,9 +57,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ORIGIN_WHITELIST = (
-    'http://localhost:4200',
-)
+CORS_ALLOWED_ORIGINS = os.environ.get(
+    'DJANGO_CORS_ALLOWED_ORIGINS', 'http://localhost:4200',
+).split(',')
 
 ROOT_URLCONF = 'app.urls'
 
@@ -145,6 +147,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+# The Docker build copies Angular here; local Angular development stays separate.
+FRONTEND_DIST_DIR = Path(os.environ.get('FRONTEND_DIST_DIR', BASE_DIR / 'frontend_dist'))
+WHITENOISE_ROOT = FRONTEND_DIST_DIR if FRONTEND_DIST_DIR.is_dir() else None
+
 STORAGES = {
     'default': {
         'BACKEND': 'django.core.files.storage.FileSystemStorage',
