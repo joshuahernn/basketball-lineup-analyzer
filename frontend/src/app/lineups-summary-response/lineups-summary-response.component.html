@@ -2,6 +2,15 @@
   <h1>Lineups Summary Responses</h1>
 
   <mat-form-field appearance="outline">
+    <mat-label>Dataset</mat-label>
+    <mat-select [(ngModel)]="selectedDataset" (selectionChange)="changeDataset()">
+      @for (dataset of datasets; track dataset.id) {
+        <mat-option [value]="dataset.id">{{ dataset.name }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
     <mat-label>Lineup size</mat-label>
     <mat-select [(ngModel)]="leagueLineupSize" (selectionChange)="changeLeagueLineupSize()">
       @for (lineupSize of lineupSizes; track lineupSize.value) {

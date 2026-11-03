@@ -42,6 +42,24 @@ urlpatterns = [
     ),
 
     re_path(
+        r'^api/v1/datasets$',
+        lineups.Datasets.as_view(),
+        name='datasets',
+    ),
+
+    re_path(
+        r'^api/v1/teams$',
+        lineups.Teams.as_view(),
+        name='teams',
+    ),
+
+    re_path(
+        r'^api/v1/games$',
+        lineups.Games.as_view(),
+        name='games',
+    ),
+
+    re_path(
         r'^(?:lineups-summary(?:-api)?)?/?$',
         frontend.dashboard,
         name='dashboard',

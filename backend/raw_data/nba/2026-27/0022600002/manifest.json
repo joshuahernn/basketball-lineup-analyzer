@@ -1,0 +1,89 @@
+{
+  "game_id": "0022600002",
+  "season": "2026-27",
+  "season_type": "Regular Season",
+  "game_date": "2026-10-20",
+  "source": "NBA.com public game page",
+  "source_url": "https://www.nba.com/game/phi-vs-nyk-0022600002/box-score",
+  "playbyplay_url": "https://www.nba.com/game/phi-vs-nyk-0022600002/play-by-play",
+  "retrieved_at_utc": "2026-11-03T05:43:26.143775+00:00",
+  "extraction": {
+    "boxscore.json": "Selected game metadata and original homeTeam/awayTeam objects from __NEXT_DATA__.props.pageProps.game",
+    "playbyplay.json": "Unmodified __NEXT_DATA__.props.pageProps.playByPlay object"
+  },
+  "playbyplay_source_label": "hanaV3",
+  "teams": [
+    {
+      "team_id": 1610612755,
+      "name": "Philadelphia 76ers",
+      "abbreviation": "PHI",
+      "home_or_away": "away",
+      "score": 106,
+      "roster_records": 17,
+      "players_with_minutes": 9
+    },
+    {
+      "team_id": 1610612752,
+      "name": "New York Knicks",
+      "abbreviation": "NYK",
+      "home_or_away": "home",
+      "score": 100,
+      "roster_records": 17,
+      "players_with_minutes": 10
+    }
+  ],
+  "event_count": 557,
+  "event_types": {
+    "period": 8,
+    "Jump Ball": 4,
+    "Made Shot": 72,
+    "Missed Shot": 111,
+    "Rebound": 126,
+    "(unspecified)": 32,
+    "Turnover": 27,
+    "Foul": 46,
+    "Substitution": 57,
+    "Free Throw": 54,
+    "Timeout": 14,
+    "Instant Replay": 3,
+    "Violation": 2,
+    "Heave": 1
+  },
+  "integrity_checks": {
+    "game_ids_match": true,
+    "requested_matchup_and_date": true,
+    "completed_game": true,
+    "unique_action_ids": true,
+    "all_four_periods": true,
+    "period_boundaries_present": true,
+    "final_event_score_matches_boxscore": true,
+    "PHI_unique_player_ids": true,
+    "PHI_period_scores_match": true,
+    "PHI_shooting_points_match": true,
+    "PHI_player_points_match": true,
+    "NYK_unique_player_ids": true,
+    "NYK_period_scores_match": true,
+    "NYK_shooting_points_match": true,
+    "NYK_player_points_match": true,
+    "event_ids_resolve_to_players_or_teams": true
+  },
+  "source_notes": [
+    "Direct liveData CDN endpoints returned HTTP 403; the public NBA game page was accessible and supplied these embedded JSON objects.",
+    "The play-by-play source is hanaV3; its schema differs from NBA liveData JSON.",
+    "32 actionNumber values are shared by related events, such as a shot and its block. actionId is unique in this snapshot. Preserve source event order.",
+    "Team-level events may use a team ID in personId. Empty actionType entries include related block and steal events.",
+    "Explicit starter flags are absent from the player objects. The importer reconstructs period-start lineups from events and substitutions and validates player minutes and plus/minus against the box score."
+  ],
+  "integration_status": "Supported by the local import_nba_game management command as dataset nba-2026-27. Import remains an explicit step for each database.",
+  "validation_scope": "Download integrity checks above cover game identity, basic event completeness, roster IDs, and final-score consistency. The converter additionally validates reconstructed lineups, player minutes, every participating player's plus/minus, and team counting statistics. The import report records the possession conventions.",
+  "files": {
+    "boxscore.json": {
+      "bytes": 36937,
+      "sha256": "2937d3d162cdcd7a69c51c6e0507e314d549da93e0661a81f9e0959c7b8315cc"
+    },
+    "playbyplay.json": {
+      "bytes": 353577,
+      "sha256": "102f55a7ebc13df600634d77e826134d576aa015abc19b238d169d9e49195c3b"
+    }
+  }
+}

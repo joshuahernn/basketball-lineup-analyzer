@@ -1,7 +1,42 @@
+<div class="dataset-selector">
+  <label for="dataset-select"> Dataset </label>
+
+  <select
+    id="dataset-select"
+    [ngModel]="selectedDataset"
+    (ngModelChange)="onDatasetChange($event)"
+    [disabled]="datasets.length === 0"
+  >
+    @for (dataset of datasets; track dataset.id) {
+      <option [value]="dataset.id">
+        {{ dataset.name }}
+      </option>
+    }
+  </select>
+</div>
+
+@if (isNbaDataset) {
+  <p class="dataset-note">
+    NBA 2026–27 sample: Philadelphia vs. New York, October 20, 2026
+  </p>
+}
+
+@if (errorMessage) {
+  <p class="status-message error-message" role="alert">
+    {{ errorMessage }}
+  </p>
+}
+
+@if (loading) {
+  <p class="status-message" role="status">
+    Loading basketball data…
+  </p>
+}
+
 <div class="team-selector">
   <label for="team-select"> Select Team </label>
 
-  <select id="team-select" [value]="selectedTeam" (change)="onTeamChange($event)">
+  <select id="team-select" [ngModel]="selectedTeam" (ngModelChange)="onTeamChange($event)">
     <option value="">Choose a team</option>
     @for (team of teamOptions; track team.value) {
       <option [value]="team.value">
@@ -19,8 +54,13 @@
       aria-label="Select game"
     >
       <mat-button-toggle value=""> All Games </mat-button-toggle>
-      @for (gameId of gameIds; track gameId; let i = $index) {
-        <mat-button-toggle [value]="gameId"> Game {{ i + 1 }} </mat-button-toggle>
+      @for (game of games; track game.game_id) {
+        <mat-button-toggle [value]="game.game_id">
+          {{ game.date | date: 'MMM d, y' }}
+          @if (gameOpponent(game); as opponent) {
+            · vs. {{ opponent }}
+          }
+        </mat-button-toggle>
       }
     </mat-button-toggle-group>
 
@@ -45,6 +85,35 @@
     </div>
 
     <div class="analytics-panel">
+      @if (teamSummary; as summary) {
+        @if (summary.game_date) {
+          <div class="game-summary-card">
+            <p class="game-date">
+              {{ summary.game_date | date: 'MMMM d, y' }} · Final
+            </p>
+
+            <div class="game-matchup">
+              <span class="game-team">
+                {{ getTeamName(selectedTeam) }}
+              </span>
+              <span class="game-score">
+                {{ summary.team_score }}
+                -
+                {{ summary.opponent_score }}
+              </span>
+              <span class="game-team">
+                {{ getTeamName(summary.opponent_team_id) }}
+              </span>
+            </div>
+          </div>
+        }
+
+        <p class="section-note">
+          {{ summary.offensive_possessions }} offensive ·
+          {{ summary.defensive_possessions }} defensive possessions
+        </p>
+      }
+
       @if (selectedGame === '') {
         @if (teamSummary; as summary) {
           <div class="comparison-controls">
@@ -73,6 +142,13 @@
           <div class="stats-section">
             <h3>Player Impact</h3>
 
+            @if (isNbaDataset) {
+              <p class="section-note">
+                Top five across this game's two teams; net rating reflects team performance
+                while each player is on court.
+              </p>
+            }
+
             <div class="player-impact-table">
               <div class="player-impact-header">
                 <span>Player</span>
@@ -85,6 +161,10 @@
                 <div class="player-impact-row">
                   <span>
                     {{ player.name }}
+                    <small class="player-sample">
+                      {{ player.offensive_possessions }} off. /
+                      {{ player.defensive_possessions }} def. possessions
+                    </small>
                   </span>
                   <span>
                     {{ player.offensive_rating.toFixed(1) }}
@@ -104,6 +184,25 @@
           <div class="stats-section">
             <h3>5-Man Lineup Recommendations — {{ getTeamName(selectedTeam) }}</h3>
 
+            <div class="sample-filter">
+              <label for="minimum-possessions">Minimum possessions on each end</label>
+              <input
+                id="minimum-possessions"
+                type="number"
+                min="1"
+                step="1"
+                [value]="minimumPossessions"
+                (input)="onMinimumPossessionsChange($event)"
+              />
+            </div>
+
+            @if (lineupRecommendations.length === 0) {
+              <p class="section-note">
+                No lineup meets this minimum on both offense and defense.
+                Lower the minimum to explore smaller samples.
+              </p>
+            }
+
             <div class="best-lineups-grid">
               @for (recommendation of lineupRecommendations; track recommendation.title) {
                 <div class="best-lineup-card">
@@ -122,6 +221,11 @@
                   <div class="best-lineup-reason">
                     {{ recommendation.reason }}
                   </div>
+
+                  <p class="lineup-sample">
+                    {{ recommendation.lineup.offensive_possessions }} offensive ·
+                    {{ recommendation.lineup.defensive_possessions }} defensive possessions
+                  </p>
 
                   <div class="best-lineup-metrics">
                     <div>
@@ -211,22 +315,6 @@
 
       @if (selectedGame !== '') {
         @if (teamSummary; as summary) {
-          <div class="game-summary-card">
-            <div class="game-matchup">
-              <span class="game-team">
-                {{ getTeamName(selectedTeam) }}
-              </span>
-              <span class="game-score">
-                {{ summary.team_score }}
-                -
-                {{ summary.opponent_score }}
-              </span>
-              <span class="game-team">
-                {{ getTeamName(summary.opponent_team_id) }}
-              </span>
-            </div>
-          </div>
-
           <div class="chart-card">
             <ag-charts [options]="ratingsChartOptions"> </ag-charts>
           </div>

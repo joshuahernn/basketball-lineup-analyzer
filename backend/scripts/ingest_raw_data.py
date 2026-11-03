@@ -49,19 +49,19 @@ def load_json(filename):
 
 
 def delete_possessions():
-    Possession.objects.all().delete()
+    Possession.objects.filter(game__dataset='demo').delete()
 
 
 def delete_players():
-    Player.objects.all().delete()
+    Player.objects.filter(team__dataset='demo').delete()
 
 
 def delete_teams():
-    Team.objects.all().delete()
+    Team.objects.filter(dataset='demo').delete()
 
 
 def delete_games():
-    Game.objects.all().delete()
+    Game.objects.filter(dataset='demo').delete()
 
 
 def ingest_teams():

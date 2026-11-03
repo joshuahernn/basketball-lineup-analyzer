@@ -10,6 +10,10 @@ class Game(models.Model):
 
     id = models.UUIDField(primary_key=True)
     date = models.DateField(null=False, db_index=True)
+    dataset = models.CharField(max_length=40, default='demo', db_index=True)
+    source_id = models.CharField(max_length=40, blank=True)
+    home_team = models.ForeignKey('Team', null=True, blank=True, on_delete=models.PROTECT, related_name='home_games')
+    away_team = models.ForeignKey('Team', null=True, blank=True, on_delete=models.PROTECT, related_name='away_games')
 
 
 class Team(models.Model):
@@ -18,6 +22,7 @@ class Team(models.Model):
 
     id = models.UUIDField(primary_key=True)
     name = models.TextField(null=False)
+    dataset = models.CharField(max_length=40, default='demo', db_index=True)
 
 
 class Player(models.Model):
@@ -45,6 +50,8 @@ class Possession(models.Model):
     defensive_player_ids = ArrayField(models.UUIDField(), size=5)
     period = models.SmallIntegerField(null=False)
     seconds = models.FloatField(null=False)
+    # NBA substitutions can split a possession into multiple lineup segments.
+    counts_as_possession = models.BooleanField(default=True)
     fg2_made = models.IntegerField(null=False)
     fg2_attempted = models.IntegerField(null=False)
     fg3_made = models.IntegerField(null=False)

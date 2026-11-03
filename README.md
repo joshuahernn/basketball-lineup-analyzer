@@ -1,49 +1,89 @@
-# Basketball Lineup Analyzer
+<p align="center">
+  <img src="docs/assets/readme-banner.svg" alt="Basketball Lineup Analyzer — explore lineups, compare teams, understand on-court performance." width="100%" />
+</p>
 
-A full-stack basketball analytics application for exploring lineup performance, comparing teams, and understanding how teams perform with individual players on the court. Built with **Angular, Django REST Framework, and PostgreSQL**, and hosted on **Railway**.
+<p align="center">
+  <strong>A full-stack basketball analytics dashboard built with Angular, Django REST Framework, and PostgreSQL.</strong>
+</p>
 
-**[Open the live demo](https://basketball-lineup-analyzer-production.up.railway.app/lineups-summary)** · [API Explorer](https://basketball-lineup-analyzer-production.up.railway.app/lineups-summary-api)
+<p align="center">
+  <a href="#what-you-can-explore">Features</a> ·
+  <a href="#nba-sample">NBA game</a> ·
+  <a href="#how-it-works">Architecture</a> ·
+  <a href="#inside-the-analytics">Methodology</a>
+</p>
 
-## Try the demo
+---
 
-No installation or account is required. Choose a team to explore its ratings, roster, and recommended lineups. Filter by game or compare teams to see how their performance changes.
+Basketball Lineup Analyzer turns possession-level data into team comparisons, player ratings, and five-player lineup recommendations. Explore a real Philadelphia–New York game or switch to the fictional demo, then choose a team and explore the numbers behind its performance.
 
-The app may take a moment to wake up after being idle.
+## What you can explore
 
-## Features
-
-- Analyze every observed 1–5-player combination using offensive and defensive possession statistics.
-- Filter by team and game, view rosters, and highlight players who participated.
-- Compare offensive, defensive, and net ratings with interactive charts.
-- Explore shooting efficiency, rebounding, turnovers, play style, tempo, and fourth-quarter performance.
-- Rank player on-court performance by net rating.
-- Recommend five-player lineups for scoring, rebounding, and overall performance, with net rating breaking rebounding ties.
-- Explore the underlying JSON results through the API Explorer.
+| Feature | What it shows |
+| :--- | :--- |
+| **NBA and demo datasets** | Philadelphia vs. New York from the 2026–27 NBA season, alongside a separate fictional dataset. |
+| **Team comparisons** | Interactive charts comparing offensive, defensive, and net ratings across teams. |
+| **Lineup recommendations** | Five-player groups ranked for scoring, rebounding, and overall performance, with an adjustable minimum possession count. |
+| **Player on-court ratings** | How teams perform with each player on the floor, ranked by net rating. |
+| **Game breakdowns** | Game-specific rosters, shooting efficiency, rebounding, turnovers, tempo, and fourth-quarter performance. |
+| **API Explorer** | The JSON results behind the dashboard, including observed 1–5-player combinations. |
 
 ## How it works
 
-The Angular dashboard requests data from Django REST endpoints. The backend queries PostgreSQL possessions, groups player combinations, accumulates statistics, and calculates derived metrics. Team summaries aggregate possessions directly rather than averaging lineup ratings.
+```mermaid
+flowchart LR
+    A[Angular dashboard] -->|Team and game filters| B[Django REST API]
+    B -->|Query possessions| C[(PostgreSQL)]
+    C -->|Possession records| B
+    B -->|Calculated metrics| A
+```
 
-| Component | Technology |
-| --- | --- |
-| Dashboard and charts | Angular, TypeScript, Angular Material, AG Charts |
-| API and analytics | Python, Django, Django REST Framework |
-| Storage | PostgreSQL |
-| Hosting | Railway, Docker, Gunicorn, WhiteNoise |
+The backend groups players into observed lineup combinations, totals their possession statistics, and calculates performance metrics. The frontend presents those results through filters, charts, and recommendation cards.
 
-The Railway deployment serves the dashboard and API together, with a separate PostgreSQL database.
+| Layer | Built with |
+| :--- | :--- |
+| **Interface** | Angular · TypeScript · Angular Material · AG Charts |
+| **Analytics & API** | Python · Django · Django REST Framework |
+| **Database** | PostgreSQL |
+| **Deployment configuration** | Docker · Gunicorn · WhiteNoise · Railway |
 
-## Demo data and methodology
+## Inside the analytics
 
-The included dataset contains **1,348 possessions**, **60 player records**, **three fictional teams**, and **seven games**. It produces **227 observed five-player lineups**; **48 players** appear in the possession data. This is demonstration data, not official league data.
+- **Comparable ratings.** Offensive and defensive ratings measure points per 100 possessions; net rating is their difference.
+- **Direct team aggregation.** Team summaries use the underlying possessions instead of averaging lineup ratings.
+- **Explicit ranking rules.** Overall lineup recommendations use net rating. Rebounding recommendations combine offensive and defensive rebound percentages, with net rating breaking ties.
+- **Careful interpretation.** Player ratings describe team performance while a player is on court. They do not isolate an individual's contribution from teammates and opponents.
 
-The application builds on existing Angular/Django scaffolding and supplied fixture data. The analytics, filtering, comparisons, and recommendations are the focus of this version. Third-party dependency notices are retained.
+## The datasets
 
-See the [analysis notes](docs/analysis.md) for metric definitions, sample-size limitations, and example results.
+Use the dataset selector to switch between the fictional demo and a real NBA game. Their statistics are kept separate.
 
-## Development
+### NBA sample
 
-The project includes 15 unit tests covering derived metrics, zero-denominator handling, and dashboard routing.
+**Philadelphia 76ers 106 — 100 New York Knicks**
 
-- [Local setup and test commands](docs/development.md)
-- [Railway deployment settings](docs/railway.md)
+October 20, 2026 · 2026–27 regular season · New York home game
+
+| Play-by-play events | Completed possessions | Observed five-player lineups | Players who appeared |
+| :---: | :---: | :---: | :---: |
+| **557** | **204** — 102 per team | **36** | **19** |
+
+Choose **NBA · 2026–27** in the dashboard to compare the two teams, explore player on-court ratings, and see which lineups performed best in this game. NBA lineup recommendations start with a minimum of five offensive and five defensive possessions; the filter lets you explore different sample sizes.
+
+The importer reconstructs lineups from play-by-play events and substitutions. Team totals, player minutes, and every participating player's plus/minus are validated against the box score before the game is imported.
+
+Sources: [NBA.com box score](https://www.nba.com/game/phi-vs-nyk-0022600002/box-score) · [NBA.com play-by-play](https://www.nba.com/game/phi-vs-nyk-0022600002/play-by-play). The [saved game data](backend/raw_data/nba/2026-27/0022600002/) is included in the repository for repeatable imports and tests.
+
+### Fictional demo
+
+| Possessions | Observed five-player lineups | Games | Fictional teams |
+| :---: | :---: | :---: | :---: |
+| **1,348** | **227** | **7** | **3** |
+
+The sample includes 60 player records, with 48 players appearing in possession data. Teams include **The Avengers**, **Justice League**, and **Tune Squad**.
+
+> Both datasets are small samples. The NBA sample covers one game, not a season; the fictional fixtures are not official league data. Extreme ratings can come from very few possessions, and tied ratings do not imply a unique best lineup.
+
+## Tests
+
+The project includes **33 automated tests** covering derived metrics, zero-denominator handling, dashboard routing, NBA conversion and box-score reconciliation, dataset isolation, and repeatable imports.

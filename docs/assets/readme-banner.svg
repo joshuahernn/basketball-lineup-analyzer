@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="300" viewBox="0 0 1200 300" role="img" aria-labelledby="title desc">
+  <title id="title">Basketball Lineup Analyzer</title>
+  <desc id="desc">A teal basketball court illustration beside the project title and technology stack.</desc>
+  <defs>
+    <clipPath id="frame"><rect width="1200" height="300" rx="18"/></clipPath>
+  </defs>
+  <g clip-path="url(#frame)">
+    <rect width="1200" height="300" fill="#102e31"/>
+    <g fill="none" stroke="#78b7a7" stroke-width="2" opacity="0.36">
+      <rect x="825" y="-55" width="310" height="410" rx="5"/>
+      <path d="M825 150h310"/>
+      <circle cx="980" cy="150" r="47"/>
+      <path d="M918-55V25h124v-80 M918 355V275h124v80"/>
+      <path d="M918 25a62 62 0 0 0 124 0 M918 275a62 62 0 0 1 124 0"/>
+      <path d="M847-55V-8a133 133 0 0 0 266 0v-47 M847 355v-47a133 133 0 0 1 266 0v47"/>
+    </g>
+    <g stroke="#e7b179" stroke-width="2" fill="#173f3d">
+      <circle cx="888" cy="94" r="9"/>
+      <circle cx="1071" cy="94" r="9"/>
+      <circle cx="980" cy="157" r="9"/>
+      <circle cx="912" cy="224" r="9"/>
+      <circle cx="1048" cy="224" r="9"/>
+    </g>
+    <g font-family="sans-serif">
+      <text x="54" y="49" fill="#96c9b9" font-size="13" font-weight="700" letter-spacing="3">BASKETBALL ANALYTICS</text>
+      <text x="51" y="113" fill="#f5f8f2" font-size="52" font-weight="700">Basketball</text>
+      <text x="51" y="174" fill="#f5f8f2" font-size="52" font-weight="700">Lineup Analyzer</text>
+      <text x="54" y="212" fill="#c8dfd4" font-size="18">Explore lineups. Compare teams. Understand performance.</text>
+      <path d="M54 244h30" stroke="#e7b179" stroke-width="3"/>
+      <text x="99" y="250" fill="#96c9b9" font-size="13" font-weight="700" letter-spacing="1.5">ANGULAR / DJANGO / POSTGRESQL</text>
+    </g>
+  </g>
+</svg>

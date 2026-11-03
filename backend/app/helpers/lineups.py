@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from app.dbmodels.models import Player
+from app.dbmodels.models import Game, Player
 from app.dbmodels.models import Possession
 from itertools import combinations
 from app.helpers.lineup_metrics import add_lineup_metrics
@@ -74,7 +74,7 @@ def ensure(
 
 
 def add_stats(entry, possession, prefix, field_map):
-    entry[f"{prefix}possessions"] += 1
+    entry[f"{prefix}possessions"] += int(possession.counts_as_possession)
     for raw_field, output_field in field_map:
         entry[f"{prefix}{output_field}"] += getattr(possession, raw_field)
 
@@ -111,10 +111,11 @@ def add_fourth_quarter_stats(
         )
 
 
-def get_team_game_ids(team_id):
+def get_team_game_ids(team_id, dataset="demo"):
     games = (
         Possession.objects.filter(
-            Q(offensive_team_id=team_id) | Q(defensive_team_id=team_id)
+            Q(offensive_team_id=team_id) | Q(defensive_team_id=team_id),
+            game__dataset=dataset,
         )
         .values_list("game_id", flat=True)
         .distinct()
@@ -124,9 +125,10 @@ def get_team_game_ids(team_id):
     return list(games)
 
 
-def get_team_summary_stats(team_id, game_id=None):
+def get_team_summary_stats(team_id, game_id=None, dataset="demo"):
     possessions = Possession.objects.filter(
-        Q(offensive_team_id=team_id) | Q(defensive_team_id=team_id)
+        Q(offensive_team_id=team_id) | Q(defensive_team_id=team_id),
+        game__dataset=dataset,
     )
 
     if game_id:
@@ -208,6 +210,14 @@ def get_team_summary_stats(team_id, game_id=None):
     add_lineup_metrics(page)
 
     page["team_id"] = team_id
+    page["dataset"] = dataset
+    matching_games = list(Game.objects.filter(
+        id__in=possessions.values_list("game_id", flat=True).distinct(),
+    ).order_by("date", "id")[:2])
+    if len(matching_games) == 1:
+        game_id = matching_games[0].id
+        page["game_date"] = matching_games[0].date
+        page["source_game_id"] = matching_games[0].source_id
 
     if game_id:
         first_possession = possessions.first()
@@ -229,20 +239,20 @@ def get_team_summary_stats(team_id, game_id=None):
     return page
 
 
-def get_player_impact_stats():
+def get_player_impact_stats(dataset="demo"):
 
     offensive_player_stats = {}
     defensive_player_stats = {}
 
     player_map = {}
 
-    for player in Player.objects.all():
+    for player in Player.objects.filter(team__dataset=dataset):
         player_map[player.id] = {
             "name": player.name,
             "team_id": player.team_id,
         }
 
-    possessions = Possession.objects.all()
+    possessions = Possession.objects.filter(game__dataset=dataset)
 
     for possession in possessions:
 
@@ -319,7 +329,8 @@ def get_player_impact_stats():
 
 
 def get_lineup_league_summary_stats(
-    lineup_size: int = 5, team_id: str | None = None, game_id: str | None = None
+    lineup_size: int = 5, team_id: str | None = None, game_id: str | None = None,
+    dataset: str = "demo",
 ) -> list[LineupRecord]:
     """Return lineup summaries across the entire league."""
 
@@ -332,7 +343,7 @@ def get_lineup_league_summary_stats(
     player_map = {}
     team_rosters = {}
 
-    for p in Player.objects.all():
+    for p in Player.objects.filter(team__dataset=dataset):
         player_map[p.id] = (p.team_id, p.name)
 
         if p.team_id not in team_rosters:
@@ -352,7 +363,7 @@ def get_lineup_league_summary_stats(
     #    2d. add raw fields to defense accumulator under key
 
     # added: filtered possessions.
-    possessions = Possession.objects.all()
+    possessions = Possession.objects.filter(game__dataset=dataset)
     if team_id:
         possessions = possessions.filter(
             Q(offensive_team_id=team_id) | Q(defensive_team_id=team_id)

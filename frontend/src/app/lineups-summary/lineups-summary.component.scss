@@ -4,7 +4,8 @@
 
 /* Team Selector */
 
-.team-selector {
+.team-selector,
+.dataset-selector {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -12,13 +13,15 @@
   margin: 28px auto 24px;
 }
 
-.team-selector label {
+.team-selector label,
+.dataset-selector label {
   font-size: 14px;
   font-weight: 500;
   color: #444;
 }
 
-.team-selector select {
+.team-selector select,
+.dataset-selector select {
   min-width: 220px;
   height: 44px;
   padding: 0 14px;
@@ -32,11 +35,13 @@
     box-shadow 0.2s ease;
 }
 
-.team-selector select:hover {
+.team-selector select:hover,
+.dataset-selector select:hover {
   border-color: #777;
 }
 
-.team-selector select:focus {
+.team-selector select:focus,
+.dataset-selector select:focus {
   outline: none;
   border-color: #3f51b5;
   box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.15);
@@ -46,6 +51,7 @@
 
 .game-selector {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   gap: 12px;
@@ -373,4 +379,64 @@
 .best-lineup-label {
   font-size: 11px;
   color: #777;
+}
+
+.dataset-note,
+.status-message {
+  max-width: 760px;
+  margin: 12px auto;
+  padding: 12px 18px;
+  color: #36564d;
+  background: #eef7f3;
+  border-radius: 8px;
+  line-height: 1.5;
+}
+
+.error-message {
+  color: #8a2730;
+  background: #fff0f0;
+}
+
+.section-note,
+.lineup-sample,
+.game-date {
+  color: #59666a;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.game-date {
+  text-align: center;
+  margin-top: 0;
+}
+
+.sample-filter {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 12px 0 18px;
+  color: #444;
+  font-size: 13px;
+}
+
+.sample-filter input {
+  width: 65px;
+  padding: 7px;
+  border: 1px solid #c7c7c7;
+  border-radius: 6px;
+}
+
+@media (max-width: 900px) {
+  .best-lineups-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.player-sample {
+  display: block;
+  margin-top: 4px;
+  color: #59666a;
+  font-size: 11px;
+  font-weight: 400;
 }
