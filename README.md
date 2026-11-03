@@ -17,6 +17,8 @@
 
 Basketball Lineup Analyzer turns possession-level data into team comparisons, player ratings, and five-player lineup recommendations. Explore a real Philadelphia–New York game or switch to the fictional demo, then choose a team and explore the numbers behind its performance.
 
+**Live demo:** [Open the dashboard](https://basketball-lineup-analyzer-production.up.railway.app/lineups-summary).
+
 ## What you can explore
 
 | Feature | What it shows |
