@@ -31,11 +31,9 @@ Basketball Lineup Analyzer turns possession-level data into team comparisons, pl
 ## How it works
 
 ```mermaid
-flowchart LR
-    A[Angular dashboard] -->|Team and game filters| B[Django REST API]
-    B -->|Query possessions| C[(PostgreSQL)]
-    C -->|Possession records| B
-    B -->|Calculated metrics| A
+flowchart TD
+    A[Angular dashboard] <-->|Filters and results| B[Django REST API]
+    B <-->|Queries and data| C[(PostgreSQL)]
 ```
 
 The backend groups players into observed lineup combinations, totals their possession statistics, and calculates performance metrics. The frontend presents those results through filters, charts, and recommendation cards.
